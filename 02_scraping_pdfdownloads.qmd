@@ -41,9 +41,9 @@ results
 ```{r}
 urls <- html_nodes(webpage, 'ol li a') %>% html_attr("href")
 
-length(urls)
+length(urls) # how many things you have 
 
-tail(urls)
+tail(urls) #reverse of head, last results, bottom results
 ```
 
 The last two urls are hyperlinks for petitions not comment letters. They were also pulled because of the same tags "ol li a".
@@ -51,13 +51,13 @@ The last two urls are hyperlinks for petitions not comment letters. They were al
 A combination of HTML class and tags can help us pull elements more precisely because the comment letters and petitions have different column width.
 
 ```{r}
-html_nodes(webpage, '.col-sm-4 ol li a')
+html_nodes(webpage, '.col-sm-4 ol li a') #all specifics found in the inspect within the website, classes 
 
 urls <- html_nodes(webpage, 'ol li a') %>% html_attr("href") %>% head() #just scraping the first six for demonstration purpose
 ```
 
 ```{r}
-urls
+urls #these are the locations relative to the base URL on top 
 ```
 
 But you can't download the PDFs from these urls yet, because complete urls start with "https://www.dol.gov".
@@ -65,6 +65,9 @@ But you can't download the PDFs from these urls yet, because complete urls start
 download the first pdf to the letter folder, using download.file() function
 ```{r}
 download.file("https://www.dol.gov/sites/dolgov/files/EBSA/laws-and-regulations/rules-and-regulations/public-comments/1210-AB85/00001.pdf", "letter/1.pdf", mode="wb")
+
+#add in the dol.gov before the sites portion of th URL on the code above
+#the letter folder --> it is creating a file called 1.pdf and it will insert in the letter thing 
 ```
 
 We can download multiple files using for loop.

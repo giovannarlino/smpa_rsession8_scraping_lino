@@ -53,14 +53,15 @@ If our apple is the data in `<table>` tag that's highlighted, it is on a `<table
 This webpage has 161 osha citations in the messenger courier industry in 2019.
 
 ```{r}
-#url of website to be scrapped
+#url of website to be scrapped 
+# we need to inspect the website tables to understand better the code and the classes of tables 
 url <- "https://www.osha.gov/pls/imis/industry.search?sic=&sicgroup=&naicsgroup=&naics=492110&state=All&officetype=All&office=All&startmonth=12&startday=31&startyear=2019&endmonth=01&endday=01&endyear=2019&opt=&optt=&scope=&fedagncode=&owner=&emph=&emphtp=&p_start=&p_finish=0&p_sort=&p_desc=DESC&p_direction=Next&p_show=200"
 ```
 
 ## read_html(): read the webpage/html document into R
 ```{r}
 #read the html content into R and assigns to webpage object
-webpage <- read_html(url, encoding = "windows-1252")
+webpage <- read_html(url)
 webpage
 ```
 Tip: to find the right encoding, run "document.inputEncoding" in the console tab.
@@ -74,13 +75,13 @@ We can select certain elements in the html document, or "nodes", by picking out 
 The following line is telling R to pull nodes or tree branches with "table" tags.
 
 ```{r}
-html_nodes(webpage,"table")
+html_nodes(webpage,"table") #another option rather than html_table 
 ```
 
 You can also choose elements or tree branches based on attributes. Here we can find the value of class attribute of the `<table>` node/branch we want and pass that onto html_nodes() function. There are two tables with the same class attribute. The table we want is the second node in the returned nodeset.
 
 ```{r}
-html_nodes(webpage,"[class='table table-bordered table-striped']")[[2]]
+html_nodes(webpage,"[class='table table-bordered table-striped']")[[2]] #look for specific tables and classes 
 ```
 
 ## html_table(): parse the table

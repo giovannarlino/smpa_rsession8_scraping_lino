@@ -105,7 +105,7 @@ Because it's inside of a table, and not some other kind of element (like a `<div
 # read in the html and extract all the tables
 results <- ag_url %>%
   read_html() %>%
-  html_table()
+  html_table() #looks for tables in the website 
 
 # show the dataframe
 
@@ -126,7 +126,7 @@ results <- ag_url %>%
 
 # Just keep the first dataframe in our list
 
-results <- results[[1]]
+results <- results[[1]] #tell the table you want, sometimes a website might have multiple tables 
 
 # show the dataframe
 
@@ -144,7 +144,8 @@ results <- ag_url %>%
   read_html() %>%
   html_table()
 
-# Standardize column headers, remove last row
+# Standardize column headers, remove last row for clarity 
+# These are splicing formulas 
 
 results <- results[[1]] %>%
   clean_names() %>%
@@ -159,3 +160,69 @@ results
 ```
 
 And there we go. We now have a nice tidy dataframe of Maryland attorney general election results that we could ask some questions of.
+
+```{r}
+
+results %>% 
+  summarise( 
+    sum (brown), 
+    sum(peroutka), 
+    sum(write_ins)
+  )
+
+```
+```{r}
+
+statewide <- results %>% 
+  summarise( 
+    total_brown = sum (brown), 
+    total_peroutka = sum(peroutka), 
+    total_writeins = sum(write_ins)
+  )
+
+statewide
+
+```
+
+
+```{r}
+
+statewide %>%  
+  mutate( 
+    total_all = total_peroutka + total_brown + total_writeins,
+    pct_peroutka = round_half_up (total_peroutka / total_all * 100, 1), 
+    pct_brown = round_half_up (total_brown / total_all * 100, 1), 
+    pct_writeins = round_half_up (total_writeins / total_all * 100, 1), 
+  )
+```
+```{r}
+
+results <- results %>%  #have to assign a name to the thing, it is equivalent to saving it, otherwise "R" will not recognize the column 
+  mutate( 
+    
+    total_all = peroutka + brown + write_ins, #now we are doing per number of counties 
+    
+    pct_peroutka = round_half_up (peroutka / total_all * 100, 1), 
+    
+    pct_brown = round_half_up (brown/ total_all * 100, 1), 
+    
+    pct_writeins = round_half_up (write_ins / total_all * 100, 1), 
+  )
+```
+
+```{r}
+
+results <- results %>%  
+  mutate( 
+    marginofvic_peroutka = pct_peroutka - pct_brown, 
+    winner = if_else(pct_peroutka > pct_brown, "P", "B")
+  )
+```
+
+```{r}
+
+results %>%  
+  group_by(winner) %>%  
+  summarise(count=n())
+
+```
